@@ -1,0 +1,43 @@
+<?php
+
+/**
+ *
+ * @file
+ * Primary module hooks for hbktemplateuser module.
+ * https://demos.wrappixel.com/premium-admin-templates/bootstrap/ample-bootstrap/package/html/ampleadmin-material/index3.html
+ * @DCG
+ * This file is no longer required in Drupal 8.
+ * @see https://www.drupal.org/node/2217931
+ */
+use Drupal\hbktemplateuser\Services\Layouts\HbktemplateuserGenerateLayouts;
+
+/**
+ *
+ * @param
+ *        $variables
+ */
+function hbktemplateuser_preprocess_page(&$variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name == 'entity.user.canonical') {
+  /**
+   *
+   * @var \Drupal\hbktemplateuser\Services\ResumeEntity\ResumeEntity $ResumeEntity
+   */
+    // $ResumeEntity =
+    // \Drupal::getContainer()->get('hbktemplateuser.resume.entity');
+    // $variables['page']['content']['hbktemplateuser_info_resume'] =
+    // $hbktemplateuserLayout->getLayout('hbktemplateuser_info_resume');
+    // $variables['page']['content'][] = $ResumeEntity->getResumeNodes();
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function hbktemplateuser_theme() {
+  return [
+    'hbktemplateuser_resume_entity' => [
+      'render element' => 'element'
+    ]
+  ];
+}

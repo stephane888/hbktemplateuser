@@ -1,0 +1,21 @@
+{% if content %}
+	<div {{attributes.addClass('hbktemplateuser-info-resume')}}>
+		{% if content.title %}
+			<h4 {{region_attributes.title.addClass('title')}}>
+				{{content.title}}
+			</h4>
+		{% endif %}
+		<div class="d-flex justify-content-between">
+			{% if content.icone %}
+				<div {{region_attributes.icone.addClass('icone')}}>
+					{{content.icone}}
+				</div>
+			{% endif %}
+			{% if content.nombre %}
+				<div {{region_attributes.nombre.addClass('nombre')}}>
+					{{content.nombre}}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endif %}

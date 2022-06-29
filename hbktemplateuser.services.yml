@@ -1,0 +1,15 @@
+services:
+  
+  hbktemplateuser.event_subscriber:
+    class: Drupal\hbktemplateuser\EventSubscriber\HbktemplateuserSubscriber
+    arguments: ['@messenger']
+    tags:
+      - { name: event_subscriber }
+
+  hbktemplateuser.generate.layouts:
+    class: Drupal\hbktemplateuser\Services\Layouts\HbktemplateuserGenerateLayouts
+    arguments: ['@plugin.manager.core.layout']
+    
+  hbktemplateuser.resume.entity:
+    class: Drupal\hbktemplateuser\Services\ResumeEntity\ResumeEntity
+    arguments: ['@entity_type.manager','@hbktemplateuser.generate.layouts']

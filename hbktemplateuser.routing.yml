@@ -1,0 +1,15 @@
+hbktemplateuser.example:
+  path: '/hbktemplateuser/example'
+  defaults:
+    _title: 'Example'
+    _controller: '\Drupal\hbktemplateuser\Controller\HbktemplateuserController::build'
+  requirements:
+    _permission: 'access content'
+
+hbktemplateuser.settings_form:
+  path: '/admin/config/system/hbktemplateuser'
+  defaults:
+    _title: 'hbktemplateuser settings'
+    _form: 'Drupal\hbktemplateuser\Form\SettingsForm'
+  requirements:
+    _permission: 'administer hbktemplateuser configuration'

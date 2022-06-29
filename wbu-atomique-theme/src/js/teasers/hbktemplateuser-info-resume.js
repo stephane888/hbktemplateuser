@@ -1,0 +1,1 @@
+import "@stephane888/wbu-atomique/scss/organisme/sections/ample-admin/hbktemplateuser-info-resume.scss";
