@@ -10,6 +10,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\SubformStateInterface;
 use Drupal\hbktemplateuser\Services\Layouts\HbktemplateuserGenerateLayouts;
+use Drupal\domain\DomainNegotiator;
 
 /**
  * Provides an example block.
@@ -41,6 +42,12 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
   protected $HbktemplateuserGenerateLayouts;
   
   /**
+   *
+   * @var DomainNegotiator
+   */
+  protected $DomainNegotiator;
+  
+  /**
    * Constructs a new CartBlock.
    *
    * @param array $configuration
@@ -55,11 +62,12 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *        The entity type manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, LayoutgenentitystylesServices $LayoutgenentitystylesServices, EntityTypeManagerInterface $entity_type_manager, HbktemplateuserGenerateLayouts $HbktemplateuserGenerateLayouts) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, LayoutgenentitystylesServices $LayoutgenentitystylesServices, EntityTypeManagerInterface $entity_type_manager, HbktemplateuserGenerateLayouts $HbktemplateuserGenerateLayouts, DomainNegotiator $DomainNegotiator) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->LayoutgenentitystylesServices = $LayoutgenentitystylesServices;
     $this->entityTypeManager = $entity_type_manager;
     $this->HbktemplateuserGenerateLayouts = $HbktemplateuserGenerateLayouts;
+    $this->DomainNegotiator = $DomainNegotiator;
   }
   
   /**
@@ -67,7 +75,7 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('layoutgenentitystyles.add.style.theme'), $container->get('entity_type.manager'), $container->get('hbktemplateuser.generate.layouts'));
+    return new static($configuration, $plugin_id, $plugin_definition, $container->get('layoutgenentitystyles.add.style.theme'), $container->get('entity_type.manager'), $container->get('hbktemplateuser.generate.layouts'), $container->get('domain.negotiator'));
   }
   
   /**
@@ -77,6 +85,7 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
   public function build() {
     $regions = [];
     $nbre = 0;
+    $link = 'internal:/manage-content/';
     if (!empty($this->configuration['type_entity']) && !empty($this->configuration['content']['type'])) {
       $nodeType = $this->entityTypeManager->getStorage($this->configuration['type_entity'])->load($this->configuration['content']['type']);
       if ($this->configuration['type_entity'] == 'node_type') {
@@ -86,8 +95,9 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
       }
       elseif ($this->configuration['type_entity'] == 'commerce_product_type') {
         $entityQuery = $this->entityTypeManager->getStorage('commerce_product')->getQuery();
-        $query = $entityQuery->condition('status', true)->condition('type', $this->configuration['content']['type']);
+        $query = $entityQuery->condition('status', true)->condition('type', $this->configuration['content']['type'])->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
         $nbre = $query->count()->execute();
+        $link = 'internal:/manage-product/';
       }
       
       $titre = [
@@ -96,15 +106,18 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
           '#type' => 'inline_template',
           '#template' => $nodeType->label()
         ],
-        '#url' => \Drupal\Core\Url::fromUri('internal:/manage-content/' . $this->configuration['content']['type'], []),
+        '#url' => \Drupal\Core\Url::fromUri($link . $this->configuration['content']['type'], []),
         '#attributes' => []
       ];
+      
       $regions = [
         'title' => [
           $titre
         ],
         'icone' => [
-          '#markup' => '<i class="far fa-folder"></i>'
+          '#type' => 'html_tag',
+          '#tag' => 'div',
+          '#value' => isset($this->configuration['content']['icone']['value']) ? $this->configuration['content']['icone']['value'] : '<i class="far fa-folder"></i>'
         ],
         'nombre' => [
           '#markup' => $nbre
@@ -195,13 +208,22 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
         $options_type[$k] = $value->label();
       }
     }
+    //
     $form['content']['type'] = [
       '#type' => 'select',
       '#title' => $this->t(' Bundle '),
       '#options' => $options_type,
       '#default_value' => $this->configuration['content']['type']
     ];
-    
+    //
+    $value = $this->configuration['content']['icone'];
+    $form['content']['icone'] = [
+      '#type' => 'text_format',
+      '#title' => 'icone',
+      '#format' => (isset($value["format"])) ? $value["format"] : 'full_html',
+      '#default_value' => (isset($value["value"])) ? $value["value"] : '<i class="far fa-folder"></i>',
+      '#attributes' => []
+    ];
     return $form;
   }
   
