@@ -85,50 +85,77 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
   public function build() {
     $regions = [];
     $nbre = 0;
+    $build = [];
     $link = 'internal:/manage-content/';
-    if (!empty($this->configuration['type_entity']) && !empty($this->configuration['content']['type'])) {
-      $nodeType = $this->entityTypeManager->getStorage($this->configuration['type_entity'])->load($this->configuration['content']['type']);
-      if ($this->configuration['type_entity'] == 'node_type') {
-        $entityQuery = $this->entityTypeManager->getStorage('node')->getQuery();
-        $query = $entityQuery->condition('type', $nodeType->id())->condition('status', true);
-        $nbre = $query->count()->execute();
+    if (!empty($this->configuration['type_entity'])) {
+      if (!empty($this->configuration['content']['type'])) {
+        $nodeType = $this->entityTypeManager->getStorage($this->configuration['type_entity'])->load($this->configuration['content']['type']);
+        if ($this->configuration['type_entity'] == 'node_type') {
+          $entityQuery = $this->entityTypeManager->getStorage('node')->getQuery();
+          $query = $entityQuery->condition('type', $nodeType->id())->condition('status', true);
+          $nbre = $query->count()->execute();
+        }
+        elseif ($this->configuration['type_entity'] == 'commerce_product_type') {
+          $entityQuery = $this->entityTypeManager->getStorage('commerce_product')->getQuery();
+          $query = $entityQuery->condition('status', true)->condition('type', $this->configuration['content']['type'])->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
+          $nbre = $query->count()->execute();
+          $link = 'internal:/manage-product/';
+        }
+        
+        $titre = [
+          '#type' => 'link',
+          '#title' => [
+            '#type' => 'inline_template',
+            '#template' => $nodeType->label()
+          ],
+          '#url' => \Drupal\Core\Url::fromUri($link . $this->configuration['content']['type'], []),
+          '#attributes' => []
+        ];
+        
+        $regions = [
+          'title' => [
+            $titre
+          ],
+          'icone' => [
+            '#type' => 'html_tag',
+            '#tag' => 'div',
+            '#value' => !empty($this->configuration['content']['icone']['value']) ? $this->configuration['content']['icone']['value'] : '<i class="far fa-folder"></i>'
+          ],
+          'nombre' => [
+            '#markup' => $nbre
+          ]
+        ];
+        $build = [
+          '#theme' => 'hbktemplateuser_resume_entity',
+          '#block' => $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions)
+        ];
       }
-      elseif ($this->configuration['type_entity'] == 'commerce_product_type') {
-        $entityQuery = $this->entityTypeManager->getStorage('commerce_product')->getQuery();
-        $query = $entityQuery->condition('status', true)->condition('type', $this->configuration['content']['type'])->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
-        $nbre = $query->count()->execute();
-        $link = 'internal:/manage-product/';
+      else {
+        $entityQuery = $this->entityTypeManager->getStorage($this->configuration['type_entity'])->getQuery();
+        $query = $entityQuery->condition('status', true)->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
+        $ids = $query->execute();
+        $contents = $this->entityTypeManager->getStorage($this->configuration['type_entity'])->loadMultiple($ids);
+        foreach ($contents as $content) {
+          $regions = [
+            'title' => [
+              $content->label()
+            ],
+            'icone' => [
+              '#type' => 'html_tag',
+              '#tag' => 'div',
+              '#value' => !empty($this->configuration['content']['icone']['value']) ? $this->configuration['content']['icone']['value'] : '<i class="far fa-folder"></i>'
+            ],
+            'nombre' => [
+              '#markup' => ''
+            ]
+          ];
+          $build[] = [
+            '#theme' => 'hbktemplateuser_resume_entity',
+            '#block' => $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions)
+          ];
+        }
       }
-      
-      $titre = [
-        '#type' => 'link',
-        '#title' => [
-          '#type' => 'inline_template',
-          '#template' => $nodeType->label()
-        ],
-        '#url' => \Drupal\Core\Url::fromUri($link . $this->configuration['content']['type'], []),
-        '#attributes' => []
-      ];
-      
-      $regions = [
-        'title' => [
-          $titre
-        ],
-        'icone' => [
-          '#type' => 'html_tag',
-          '#tag' => 'div',
-          '#value' => isset($this->configuration['content']['icone']['value']) ? $this->configuration['content']['icone']['value'] : '<i class="far fa-folder"></i>'
-        ],
-        'nombre' => [
-          '#markup' => $nbre
-        ]
-      ];
     }
-    
-    $build = [
-      '#theme' => 'hbktemplateuser_resume_entity',
-      '#block' => $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions)
-    ];
     return $build;
   }
   
@@ -195,9 +222,11 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
           }
           ;
           break;
-        
+        case 'site_internet_entity':
+          $options_type = [];
+          break;
         default:
-          $this->messenger()->addWarning(" Type de contenu non traiter ");
+          $this->messenger()->addWarning(" Type de contenu non traiter : " . $type_entity);
           break;
       }
     }
@@ -213,7 +242,8 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
       '#type' => 'select',
       '#title' => $this->t(' Bundle '),
       '#options' => $options_type,
-      '#default_value' => $this->configuration['content']['type']
+      '#default_value' => $this->configuration['content']['type'],
+      '#access' => !empty($options_type) ? true : false
     ];
     //
     $value = $this->configuration['content']['icone'];
