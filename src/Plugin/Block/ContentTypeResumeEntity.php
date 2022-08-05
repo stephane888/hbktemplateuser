@@ -84,6 +84,7 @@ class ContentTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
    * {@inheritdoc}
    */
   public function build() {
+    $uid = \Drupal::currentUser()->id();
     $regions = [];
     $nbre = 0;
     $build = [];
@@ -94,6 +95,7 @@ class ContentTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
         continue;
       $entityQuery = $this->entityTypeManager->getStorage('node')->getQuery();
       $query = $entityQuery->condition('status', true)->condition('type', $value->id())->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
+      $query->condition('uid', $uid);
       $nbre = $query->count()->execute();
       $link = 'internal:/manage-content/';
       $link = \Drupal\Core\Url::fromUri($link . $value->id(), []);
