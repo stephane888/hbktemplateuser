@@ -91,7 +91,7 @@ class ContentTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
     $sections = [];
     $typesProduct = $this->entityTypeManager->getStorage('node_type')->loadMultiple();
     foreach ($typesProduct as $value) {
-      if ($value->id() == 'page' || $value->id() == 'article')
+      if ($value->id() == 'page')
         continue;
       $entityQuery = $this->entityTypeManager->getStorage('node')->getQuery();
       $query = $entityQuery->condition('status', true)->condition('type', $value->id())->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
