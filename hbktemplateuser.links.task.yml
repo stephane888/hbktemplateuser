@@ -1,0 +1,4 @@
+hbktemplateuser.actions:
+  route_name: hbktemplateuser.actions
+  base_route: entity.user.canonical
+  title: 'Configuration'

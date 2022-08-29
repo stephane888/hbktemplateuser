@@ -1,5 +1,5 @@
-hbktemplateuser.example:
-  path: '/hbktemplateuser/example'
+hbktemplateuser.actions:
+  path: '/user/{user}/hbktemplateuser/actions'
   defaults:
     _title: 'Example'
     _controller: '\Drupal\hbktemplateuser\Controller\HbktemplateuserController::build'
