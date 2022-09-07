@@ -1,7 +1,7 @@
 hbktemplateuser.actions:
   path: '/user/{user}/hbktemplateuser/actions'
   defaults:
-    _title: 'Example'
+    _title: 'Configurations'
     _controller: '\Drupal\hbktemplateuser\Controller\HbktemplateuserController::build'
   requirements:
     _permission: 'access content'
