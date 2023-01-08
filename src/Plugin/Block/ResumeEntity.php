@@ -111,8 +111,12 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
           $nbre = 1;
           //
           $ids = $query->execute();
+          if (empty($ids))
+            return [];
           $id = reset($ids);
           $nodeType = BlockContent::load($id);
+          if (empty($nodeType))
+            return [];
           $link = \Drupal\Core\Url::fromRoute('entity.block_content.edit_form', [
             'block_content' => $nodeType->id()
           ]);
