@@ -98,6 +98,13 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
           $nbre = $query->count()->execute();
           $link = \Drupal\Core\Url::fromUri($link . $this->configuration['content']['type'], []);
         }
+        elseif ($this->configuration['type_entity'] == 'blocks_contents_type') {
+          $entityQuery = $this->entityTypeManager->getStorage('blocks_contents')->getQuery();
+          $query = $entityQuery->condition('status', true)->condition('type', $this->configuration['content']['type'])->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
+          $nbre = $query->count()->execute();
+          $link = 'internal:/manage-blocks-contents/';
+          $link = \Drupal\Core\Url::fromUri($link . $this->configuration['content']['type'], []);
+        }
         elseif ($this->configuration['type_entity'] == 'commerce_product_type') {
           $entityQuery = $this->entityTypeManager->getStorage('commerce_product')->getQuery();
           $query = $entityQuery->condition('status', true)->condition('type', $this->configuration['content']['type'])->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
@@ -122,6 +129,8 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
           ]);
           // dump($this->configuration['content']['type']);
         }
+        if ($nbre == 'rtr')
+          return [];
         
         $titre = [
           '#type' => 'link',
@@ -151,6 +160,8 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
           '#block' => $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions)
         ];
       }
+      // block pour gerer uniquement les pages.( on devrait mettre à jour si
+      // besoin se fait resentir ).
       else {
         $entityQuery = $this->entityTypeManager->getStorage($this->configuration['type_entity'])->getQuery();
         $query = $entityQuery->condition('status', true)->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
@@ -261,6 +272,7 @@ class ResumeEntity extends BlockBase implements ContainerFactoryPluginInterface 
         case 'commerce_product_type':
         case 'commerce_product':
         case 'block_content_type':
+        case 'blocks_contents_type':
           $list_entities_type = $this->entityTypeManager->getStorage($type_entity)->loadMultiple();
           foreach ($list_entities_type as $k => $value) {
             $options_type[$k] = $value->label();
