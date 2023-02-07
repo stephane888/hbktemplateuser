@@ -89,14 +89,18 @@ class BlocksContentsTypeResumeEntity extends BlockBase implements ContainerFacto
     $build = [];
     $sections = [];
     $typesProduct = $this->entityTypeManager->getStorage('blocks_contents_type')->loadMultiple();
+    
     foreach ($typesProduct as $value) {
       $entityQuery = $this->entityTypeManager->getStorage('blocks_contents')->getQuery();
       $query = $entityQuery->condition('status', true)->condition('type', $value->id())->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
       $nbre = $query->count()->execute();
       $link = 'internal:/manage-blocks-contents/';
       $link = \Drupal\Core\Url::fromUri($link . $value->id(), []);
+      //
+      
       if ($nbre == 0)
         continue;
+      
       $titre = [
         '#type' => 'link',
         '#title' => [

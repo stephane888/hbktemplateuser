@@ -99,7 +99,8 @@ class ContentTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
       $nbre = $query->count()->execute();
       $link = 'internal:/manage-content/';
       $link = \Drupal\Core\Url::fromUri($link . $value->id(), []);
-      
+      if ($nbre == 0)
+        continue;
       $titre = [
         '#type' => 'link',
         '#title' => [
