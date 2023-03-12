@@ -5,6 +5,14 @@ hbktemplateuser.actions:
     _controller: '\Drupal\hbktemplateuser\Controller\HbktemplateuserController::build'
   requirements:
     _permission: 'access content'
+    
+hbktemplateuser.payment_gateways:
+  path: '/user/{user}/hbktemplateuser/payment-gateways'
+  defaults:
+    _title: 'Configurations'
+    _controller: '\Drupal\hbktemplateuser\Controller\HbktemplateuserController::SelectPaymentGateways'
+  requirements:
+    _permission: 'access content'
 
 hbktemplateuser.settings_form:
   path: '/admin/config/system/hbktemplateuser'

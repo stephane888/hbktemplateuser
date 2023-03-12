@@ -12,20 +12,20 @@ use Symfony\Component\HttpFoundation\Request;
  * Returns responses for hbktemplateuser routes.
  */
 class HbktemplateuserController extends ControllerBase {
-
+  
   /**
    *
    * @var DomainNegotiator
    */
   protected $DomainNegotiator;
-
+  
   /**
    * --
    */
   function __construct(DomainNegotiator $DomainNegotiator) {
     $this->DomainNegotiator = $DomainNegotiator;
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -33,7 +33,15 @@ class HbktemplateuserController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static($container->get('domain.negotiator'));
   }
-
+  
+  /**
+   * L'objectif de la function est de permetre à l'utilisateur de selectionner
+   * et configurrer les moyens de configurations.
+   */
+  public function SelectPaymentGateways() {
+    return [];
+  }
+  
   /**
    * Builds the response.
    */
@@ -49,9 +57,9 @@ class HbktemplateuserController extends ControllerBase {
         ]
       ]
     ];
-
+    
     if (\Drupal::moduleHandler()->moduleExists('domain') && $domain = $this->DomainNegotiator->getActiveDomain()) {
-
+      
       $themeConf = $this->entityTypeManager()->getStorage("config_theme_entity")->loadByProperties([
         'hostname' => $domain->id()
       ]);
@@ -76,7 +84,7 @@ class HbktemplateuserController extends ControllerBase {
         ];
       }
     }
-
+    
     $links[] = [
       '#type' => 'link',
       '#title' => ' Definir des styles personnalisés pour le theme ',
@@ -102,7 +110,7 @@ class HbktemplateuserController extends ControllerBase {
     // $this->ExportEntities->getEntites();
     $build['content'] = [
       '#type' => 'html_tag',
-
+      
       '#tag' => 'h2',
       '#value' => $this->t("Liste d'actions")
     ];
@@ -112,5 +120,5 @@ class HbktemplateuserController extends ControllerBase {
     ];
     return $build;
   }
-
+  
 }
