@@ -11,23 +11,47 @@
  */
 use Drupal\hbktemplateuser\Services\Layouts\HbktemplateuserGenerateLayouts;
 
+// /**
+// *
+// * @param
+// * $variables
+// */
+// function hbktemplateuser_preprocess_page(&$variables) {
+// dump('ddf');
+// $route_name = \Drupal::routeMatch()->getRouteName();
+// $user_id = \Drupal::currentUser()->id();
+// if ($route_name == 'entity.user.canonical' && $user_id) {
+// $config = \Drupal::config('hbktemplateuser.settings')->getRawData();
+// if (!empty($config['page_user_template'])) {
+// $variables['page']['#theme'] = $config['page_user_template'];
+// }
+// }
+// }
+
 /**
  *
- * @param
- *        $variables
+ * @param [] $variables
  */
-function hbktemplateuser_preprocess_page(&$variables) {
+function hbktemplateuser_preprocess_page_shards(&$variables) {
+  // on ajoute le logo
+  $variables['attributes'] = [
+    'class' => [
+      'hbk-adminitrative-page'
+    ]
+  ];
+}
+
+/**
+ * implement hook_theme_suggestions_HOOK_alter()
+ */
+function hbktemplateuser_theme_suggestions_page_alter(array &$suggestions, array $variables, $hook) {
   $route_name = \Drupal::routeMatch()->getRouteName();
-  if ($route_name == 'entity.user.canonical') {
-  /**
-   *
-   * @var \Drupal\hbktemplateuser\Services\ResumeEntity\ResumeEntity $ResumeEntity
-   */
-    // $ResumeEntity =
-    // \Drupal::getContainer()->get('hbktemplateuser.resume.entity');
-    // $variables['page']['content']['hbktemplateuser_info_resume'] =
-    // $hbktemplateuserLayout->getLayout('hbktemplateuser_info_resume');
-    // $variables['page']['content'][] = $ResumeEntity->getResumeNodes();
+  $user_id = \Drupal::currentUser()->id();
+  if ($route_name == 'entity.user.canonical' && $user_id) {
+    $config = \Drupal::config('hbktemplateuser.settings')->getRawData();
+    if (!empty($config['page_user_template'])) {
+      $suggestions[] = $config['page_user_template'];
+    }
   }
 }
 
@@ -38,6 +62,15 @@ function hbktemplateuser_theme() {
   return [
     'hbktemplateuser_resume_entity' => [
       'render element' => 'element'
+    ],
+    'page_shards' => [
+      'render element' => 'element'
+    ],
+    'nav_shards_dashbord' => [
+      'variables' => [
+        'items' => []
+      ]
     ]
   ];
 }
+

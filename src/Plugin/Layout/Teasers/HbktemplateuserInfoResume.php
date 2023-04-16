@@ -55,6 +55,7 @@ class HbktemplateuserInfoResume extends FormatageModelsTeasers {
     // TODO Auto-generated method stub
     $build = parent::build($regions);
     FormatageModelsThemes::formatSettingValues($build);
+    // dump($build['title']);
     return $build;
   }
   

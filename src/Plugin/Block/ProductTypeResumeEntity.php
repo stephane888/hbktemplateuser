@@ -2,8 +2,6 @@
 
 namespace Drupal\hbktemplateuser\Plugin\Block;
 
-use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\layoutgenentitystyles\Services\LayoutgenentitystylesServices;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -22,7 +20,7 @@ use Drupal\block_content\Entity\BlockContent;
  *   category = @Translation("hbktemplateuser")
  * )
  */
-class ProductTypeResumeEntity extends BlockBase implements ContainerFactoryPluginInterface {
+class ProductTypeResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInterface {
   /**
    *
    * @var LayoutgenentitystylesServices
@@ -99,9 +97,11 @@ class ProductTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
       // il appartient à un utilisateur bien precis. (voir la tache/2183)
       $query->condition('uid', $uid);
       $nbre = $query->count()->execute();
-      $link = 'internal:/manage-product/';
+      $link = 'internal:/manage-commerce_product/';
       $link = \Drupal\Core\Url::fromUri($link . $value->id(), []);
       
+      if ($nbre == 0)
+        continue;
       $titre = [
         '#type' => 'link',
         '#title' => [
@@ -111,20 +111,16 @@ class ProductTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
         '#url' => $link,
         '#attributes' => []
       ];
-      
       $regions = [
         'title' => [
           $titre
         ],
-        'icone' => [
-          '#type' => 'html_tag',
-          '#tag' => 'div',
-          '#value' => !empty($this->configuration['content']['icone']['value']) ? $this->configuration['content']['icone']['value'] : '<i class="far fa-folder"></i>'
-        ],
+        'icone' => $this->viewValue(!empty($this->configuration['icone']['value']) ? $this->configuration['icone']['value'] : '<i class="far fa-folder"></i>', ''),
         'nombre' => [
           '#markup' => $nbre
         ]
       ];
+      
       $sections[] = [
         '#theme' => 'hbktemplateuser_resume_entity',
         '#block' => $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions)
@@ -140,43 +136,11 @@ class ProductTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
       ],
       $sections
     ];
-    //
+    if (!empty($sections))
+      return $build;
+    else
+      return [];
     return $build;
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function blockForm($form, FormStateInterface $form_state) {
-    $form = parent::blockForm($form, $form_state);
-    return $form;
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function defaultConfiguration() {
-    return [
-      // on definit ici le style utilisé par le layout.
-      'block_load_style_scss_js' => 'hbktemplateuser/hbktemplateuser-info-resume'
-    ];
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function blockSubmit($form, FormStateInterface $form_state) {
-    parent::blockSubmit($form, $form_state);
-    $library = $this->configuration['block_load_style_scss_js'];
-    $this->LayoutgenentitystylesServices->addStyleFromModule($library, 'hbktemplateuser_resume_entity', 'layout', 'teasers/');
-    // save
-    $this->configuration['type_entity'] = $form_state->getValue('type_entity');
-    $this->configuration['content'] = $form_state->getValue('content');
-    $this->configuration['icone'] = $form_state->getValue('icone');
-    $this->configuration['title'] = $form_state->getValue('title');
   }
   
 }

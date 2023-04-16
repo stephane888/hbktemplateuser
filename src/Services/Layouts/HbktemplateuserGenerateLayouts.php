@@ -4,6 +4,7 @@ namespace Drupal\hbktemplateuser\Services\Layouts;
 
 use Drupal\Core\Layout\LayoutPluginManager;
 use Drupal\formatage_models\Plugin\Layout\FormatageModels;
+use Drupal\Component\Utility\NestedArray;
 
 class HbktemplateuserGenerateLayouts {
   protected $LayoutPluginManager;
@@ -16,11 +17,11 @@ class HbktemplateuserGenerateLayouts {
   /**
    * Permet de faire le rendu d'un layout.
    */
-  function getLayout($plugin_id, array $regions = [], $removeDefaultContent = true) {
+  function getLayout($plugin_id, array $regions = [], $removeDefaultContent = true, array $configs = []) {
     if (empty($this->intences[$plugin_id])) {
       /**
        *
-       * @var \Drupal\formatage_models\Plugin\Layout\FormatageModels $layout
+       * @var \Drupal\hbktemplateuser\Plugin\Layout\Teasers\HbktemplateuserInfoResume $layout
        */
       $layout = $this->LayoutPluginManager->createInstance($plugin_id);
       $this->intences[$plugin_id] = $layout;
@@ -35,7 +36,10 @@ class HbktemplateuserGenerateLayouts {
           $config[$k]['builder-form'] = false;
         }
       }
-      $layout->setConfiguration($config);
+      $config = $layout->setConfiguration(NestedArray::mergeDeepArray([
+        $config,
+        $configs
+      ]));
     }
     // dump($layout->getPluginDefinition()->getRegions());
     return $layout->build($regions);

@@ -18,11 +18,11 @@ use Drupal\block_content\Entity\BlockContent;
  *
  * @Block(
  *   id = "hbktemplateuser_blocks_contents_resume",
- *   admin_label = @Translation(" Blocks contents resume entity "),
+ *   admin_label = @Translation(" Permet de contruire uniquement les resumes de type 'Blocks contents'. "),
  *   category = @Translation("hbktemplateuser")
  * )
  */
-class BlocksContentsTypeResumeEntity extends BlockBase implements ContainerFactoryPluginInterface {
+class BlocksContentsTypeResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInterface {
   /**
    *
    * @var LayoutgenentitystylesServices
@@ -89,12 +89,11 @@ class BlocksContentsTypeResumeEntity extends BlockBase implements ContainerFacto
     $build = [];
     $sections = [];
     $typesProduct = $this->entityTypeManager->getStorage('blocks_contents_type')->loadMultiple();
-    
     foreach ($typesProduct as $value) {
       $entityQuery = $this->entityTypeManager->getStorage('blocks_contents')->getQuery();
       $query = $entityQuery->condition('status', true)->condition('type', $value->id())->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
       $nbre = $query->count()->execute();
-      $link = 'internal:/manage-blocks-contents/';
+      $link = 'internal:/manage-blocks_contents/';
       $link = \Drupal\Core\Url::fromUri($link . $value->id(), []);
       //
       
@@ -115,11 +114,7 @@ class BlocksContentsTypeResumeEntity extends BlockBase implements ContainerFacto
         'title' => [
           $titre
         ],
-        'icone' => [
-          '#type' => 'html_tag',
-          '#tag' => 'div',
-          '#value' => !empty($this->configuration['content']['icone']['value']) ? $this->configuration['content']['icone']['value'] : '<i class="far fa-folder"></i>'
-        ],
+        'icone' => $this->viewValue(!empty($this->configuration['icone']['value']) ? $this->configuration['icone']['value'] : '<i class="far fa-folder"></i>'),
         'nombre' => [
           '#markup' => $nbre
         ]
@@ -139,43 +134,11 @@ class BlocksContentsTypeResumeEntity extends BlockBase implements ContainerFacto
       ],
       $sections
     ];
-    //
+    if (!empty($sections))
+      return $build;
+    else
+      return [];
     return $build;
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function blockForm($form, FormStateInterface $form_state) {
-    $form = parent::blockForm($form, $form_state);
-    return $form;
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function defaultConfiguration() {
-    return [
-      // on definit ici le style utilisé par le layout.
-      'block_load_style_scss_js' => 'hbktemplateuser/hbktemplateuser-info-resume'
-    ];
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function blockSubmit($form, FormStateInterface $form_state) {
-    parent::blockSubmit($form, $form_state);
-    $library = $this->configuration['block_load_style_scss_js'];
-    $this->LayoutgenentitystylesServices->addStyleFromModule($library, 'hbktemplateuser_resume_entity', 'layout', 'teasers/');
-    // save
-    $this->configuration['type_entity'] = $form_state->getValue('type_entity');
-    $this->configuration['content'] = $form_state->getValue('content');
-    $this->configuration['icone'] = $form_state->getValue('icone');
-    $this->configuration['title'] = $form_state->getValue('title');
   }
   
 }

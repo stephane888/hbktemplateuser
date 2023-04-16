@@ -1,0 +1,1 @@
+import "@stephane888/wbu-atomique/scss/templates/admin-shard/dashbord-drupal.scss";

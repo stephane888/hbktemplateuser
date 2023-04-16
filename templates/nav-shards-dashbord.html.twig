@@ -1,0 +1,31 @@
+{% macro buildMenu(MenuItems) %}
+	<ul class="nav flex-column">		
+		{% for item in MenuItems if item.active %}
+		<li class="nav-item">
+			<a class="nav-link {{item.class}} {% if (item.url is empty) and (item.childrens is empty)  %} disabled {% endif %}" href="{{ item.url }}"> {{ item.icone }} <span>{{ item.label }}</span> </a> 
+		    {% if item.childrens %}
+		    	<i class="fas fa-caret-right icon-submenu"></i>
+    			<ul class="nav flex-column">
+    				{% for subItem in item.childrens if subItem.active %}
+    				<li class="nav-item">
+    					<a class="nav-link {% if subItem.url is empty %} disabled {% endif %}" href="{{ subItem.url }}"> {{ subItem.icone }} <span>{{ subItem.label }}</span>
+    					</a>
+    				</li>
+    				{% endfor %}
+    			</ul> 
+			{% endif %}
+		</li>
+		{% endfor %}		
+	</ul>
+{% endmacro %}
+
+{% if items %}
+<div class="nav-wrapper">
+	{% for group_menu in items  %}
+		{% if group_menu.title_group %}
+			<div class="h4 block-title"> {{group_menu.title_group}} </div>
+		{% endif %}
+		{{ _self.buildMenu(group_menu.items) }}
+	{% endfor %}
+</div>
+{% endif %}

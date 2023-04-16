@@ -18,11 +18,11 @@ use Drupal\block_content\Entity\BlockContent;
  *
  * @Block(
  *   id = "hbktemplateuser_content_type_resume_entity",
- *   admin_label = @Translation(" Content type resume entity "),
+ *   admin_label = @Translation(" Permet de contruire uniquement les resumes de type nodes. "),
  *   category = @Translation("hbktemplateuser")
  * )
  */
-class ContentTypeResumeEntity extends BlockBase implements ContainerFactoryPluginInterface {
+class ContentTypeResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInterface {
   /**
    *
    * @var LayoutgenentitystylesServices
@@ -91,22 +91,19 @@ class ContentTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
     $sections = [];
     $typesProduct = $this->entityTypeManager->getStorage('node_type')->loadMultiple();
     foreach ($typesProduct as $value) {
-      if ($value->id() == 'page')
-        continue;
+      // if ($value->id() == 'page')
+      // continue;
       $entityQuery = $this->entityTypeManager->getStorage('node')->getQuery();
       $query = $entityQuery->condition('status', true)->condition('type', $value->id())->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
       $query->condition('uid', $uid);
       $nbre = $query->count()->execute();
-      $link = 'internal:/manage-content/';
+      $link = 'internal:/manage-node/';
       $link = \Drupal\Core\Url::fromUri($link . $value->id(), []);
       if ($nbre == 0)
         continue;
       $titre = [
         '#type' => 'link',
-        '#title' => [
-          '#type' => 'inline_template',
-          '#template' => $value->label()
-        ],
+        '#title' => $this->viewValue($value->label(), 'contenu'),
         '#url' => $link,
         '#attributes' => []
       ];
@@ -115,11 +112,7 @@ class ContentTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
         'title' => [
           $titre
         ],
-        'icone' => [
-          '#type' => 'html_tag',
-          '#tag' => 'div',
-          '#value' => !empty($this->configuration['content']['icone']['value']) ? $this->configuration['content']['icone']['value'] : '<i class="far fa-folder"></i>'
-        ],
+        'icone' => $this->viewValue(!empty($this->configuration['icone']['value']) ? $this->configuration['icone']['value'] : '<i class="far fa-folder"></i>'),
         'nombre' => [
           '#markup' => $nbre
         ]
@@ -139,43 +132,10 @@ class ContentTypeResumeEntity extends BlockBase implements ContainerFactoryPlugi
       ],
       $sections
     ];
-    //
-    return $build;
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function blockForm($form, FormStateInterface $form_state) {
-    $form = parent::blockForm($form, $form_state);
-    return $form;
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function defaultConfiguration() {
-    return [
-      // on definit ici le style utilisé par le layout.
-      'block_load_style_scss_js' => 'hbktemplateuser/hbktemplateuser-info-resume'
-    ];
-  }
-  
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function blockSubmit($form, FormStateInterface $form_state) {
-    parent::blockSubmit($form, $form_state);
-    $library = $this->configuration['block_load_style_scss_js'];
-    $this->LayoutgenentitystylesServices->addStyleFromModule($library, 'hbktemplateuser_resume_entity', 'layout', 'teasers/');
-    // save
-    $this->configuration['type_entity'] = $form_state->getValue('type_entity');
-    $this->configuration['content'] = $form_state->getValue('content');
-    $this->configuration['icone'] = $form_state->getValue('icone');
-    $this->configuration['title'] = $form_state->getValue('title');
+    if (!empty($sections))
+      return $build;
+    else
+      return [];
   }
   
 }
