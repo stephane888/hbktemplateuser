@@ -238,11 +238,7 @@ class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInte
             'label' => 'Exporter le theme encours',
             'active' => true,
             'icone' => $this->viewValue('<i class="fas fa-download"></i>'),
-            'url' => Url::fromRoute('export_import_entities.generatesite', [], [
-              'query' => [
-                'destination' => $this->Request->getPathInfo()
-              ]
-            ]),
+            'url' => Url::fromRoute('export_import_entities.generatesite', []),
             'childrens' => []
           ],
           $link_edit_theme,
