@@ -235,7 +235,7 @@ class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInte
         'url' => '',
         'childrens' => [
           [
-            'label' => 'Exporter le theme encours',
+            'label' => $this->t('Export current theme'),
             'active' => true,
             'icone' => $this->viewValue('<i class="fas fa-download"></i>'),
             'url' => Url::fromRoute('export_import_entities.generatesite', []),
@@ -243,7 +243,7 @@ class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInte
           ],
           $link_edit_theme,
           [
-            'label' => 'Ajouter du code CSS et JS (developer)',
+            'label' => $this->t('Add CSS and JS code (developer)'),
             'active' => true,
             'icone' => $this->viewValue('<i class="fas fa-fill-drip"></i>'),
             'url' => Url::fromRoute('generate_style_theme.managecustom.styles', [], [
@@ -254,7 +254,7 @@ class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInte
             'childrens' => []
           ],
           [
-            'label' => 'Voir les imports de style (developer)',
+            'label' => $this->t('Add CSS and JS code (developer)'),
             'active' => true,
             'icone' => $this->viewValue('<i class="fas fa-truck-loading"></i>'),
             'url' => Url::fromRoute('layoutgenentitystyles.generate', [], [
