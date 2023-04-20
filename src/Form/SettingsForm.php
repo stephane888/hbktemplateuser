@@ -9,7 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
  * Configure hbktemplateuser settings for this site.
  */
 class SettingsForm extends ConfigFormBase {
-
+  
   /**
    *
    * {@inheritdoc}
@@ -17,7 +17,7 @@ class SettingsForm extends ConfigFormBase {
   public function getFormId() {
     return 'hbktemplateuser_settings';
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -27,7 +27,7 @@ class SettingsForm extends ConfigFormBase {
       'hbktemplateuser.settings'
     ];
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -36,7 +36,7 @@ class SettingsForm extends ConfigFormBase {
     $config = $this->config('hbktemplateuser.settings');
     $form['page_user_template'] = [
       '#type' => 'select',
-      '#title' => $this->t(" Template pour le dashbord "),
+      '#title' => $this->t(" Template for the dashboard"),
       '#options' => [
         '' => 'Aucun',
         'page_shards' => 'Modele 1 light '
@@ -45,7 +45,7 @@ class SettingsForm extends ConfigFormBase {
     ];
     return parent::buildForm($form, $form_state);
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -56,5 +56,5 @@ class SettingsForm extends ConfigFormBase {
     $config->save();
     parent::submitForm($form, $form_state);
   }
-
+  
 }
