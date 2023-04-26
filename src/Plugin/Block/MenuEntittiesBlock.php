@@ -233,7 +233,8 @@ class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInte
         'active' => true,
         'icone' => $this->viewValue('<i class="fas fa-sliders-h"></i>'),
         'url' => '',
-        'childrens' => [
+        'childrens' => [          
+          $link_edit_theme,
           [
             'label' => $this->t('Export current theme'),
             'active' => true,
@@ -241,9 +242,8 @@ class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInte
             'url' => Url::fromRoute('export_import_entities.generatesite', []),
             'childrens' => []
           ],
-          $link_edit_theme,
           [
-            'label' => $this->t('Add CSS and JS code (developer)'),
+            'label' => $this->t('Custom CSS and JS code (developer)'),
             'active' => true,
             'icone' => $this->viewValue('<i class="fas fa-fill-drip"></i>'),
             'url' => Url::fromRoute('generate_style_theme.managecustom.styles', [], [
