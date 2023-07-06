@@ -4,8 +4,15 @@ namespace Drupal\hbktemplateuser\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
+use Stephane888\Debug\Repositories\ConfigDrupal;
+use Drupal\lesroidelareno\lesroidelareno;
 
 class BaseResumeEntity extends BlockBase {
+  /**
+   *
+   * @var array
+   */
+  protected $configs = [];
   
   public function build() {
     return [];
@@ -181,6 +188,43 @@ class BaseResumeEntity extends BlockBase {
         '#block' => $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions)
       ];
     }
+  }
+  
+  /**
+   * --
+   */
+  protected function userIsAdministratorOfDomaine() {
+    if (lesroidelareno::isAdministrator()) {
+      return true;
+    }
+    elseif (lesroidelareno::isOwnerSite()) {
+      $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+      $domaines = $user->get('field_domain_admin')->getValue();
+      if ($domaines) {
+        /**
+         *
+         * @var \Drupal\domain_source\HttpKernel\DomainSourcePathProcessor $domain_source
+         */
+        $domain_source = \Drupal::service('domain_source.path_processor');
+        $domain = $domain_source->getActiveDomain();
+        if ($domain)
+          foreach ($domaines as $value) {
+            if ($value['target_id'] == $domain->id())
+              return true;
+          }
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * Charge la config.
+   */
+  public function getConfigs() {
+    if (!$this->configs) {
+      $this->configs = ConfigDrupal::config('login_rx_vuejs.settings');
+    }
+    return $this->configs;
   }
   
 }

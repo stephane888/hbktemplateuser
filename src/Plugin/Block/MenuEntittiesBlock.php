@@ -20,7 +20,7 @@ use Drupal\domain\DomainNegotiator;
  *   category = @Translation("hbktemplateuser")
  * )
  */
-class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPluginInterface {
   
   /**
    * The entity type manager.
@@ -55,6 +55,9 @@ class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInte
    * {@inheritdoc}
    */
   public function build() {
+    if (!$this->userIsAdministratorOfDomaine()) {
+      return [];
+    }
     $build['content'] = [
       '#theme' => 'nav_shards_dashbord',
       '#items' => !empty($this->configuration['override_menus']) ? $this->formatValues($this->configuration['entities']) : $this->buildDefaultEntities()
@@ -233,7 +236,7 @@ class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInte
         'active' => true,
         'icone' => $this->viewValue('<i class="fas fa-sliders-h"></i>'),
         'url' => '',
-        'childrens' => [          
+        'childrens' => [
           $link_edit_theme,
           [
             'label' => $this->t('Export current theme'),
@@ -320,26 +323,6 @@ class MenuEntittiesBlock extends BlockBase implements ContainerFactoryPluginInte
     else {
       $this->configuration['entities'] = [];
     }
-  }
-  
-  /**
-   * Generate the output appropriate for one field item.
-   *
-   * @param \Drupal\Core\Field\FieldItemInterface $item
-   *        One field item.
-   *        
-   * @return array The textual output generated as a render array.
-   */
-  protected function viewValue($value) {
-    // The text value has no text format assigned to it, so the user input
-    // should equal the output, including newlines.
-    return [
-      '#type' => 'inline_template',
-      '#template' => '{{ value|raw }}',
-      '#context' => [
-        'value' => $value
-      ]
-    ];
   }
   
 }

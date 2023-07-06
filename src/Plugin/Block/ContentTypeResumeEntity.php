@@ -84,6 +84,9 @@ class ContentTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
    * {@inheritdoc}
    */
   public function build() {
+    if (!$this->userIsAdministratorOfDomaine()) {
+      return [];
+    }
     $uid = \Drupal::currentUser()->id();
     $regions = [];
     $nbre = 0;

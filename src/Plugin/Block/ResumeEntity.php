@@ -86,6 +86,9 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
    * {@inheritdoc}
    */
   public function build() {
+    if (!$this->userIsAdministratorOfDomaine()) {
+      return [];
+    }
     $regions = [];
     $nbre = 0;
     $build = [];
