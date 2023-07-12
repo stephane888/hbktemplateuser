@@ -268,6 +268,14 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
             'childrens' => []
           ]
         ]
+      ],
+      [
+        'label' => 'Configuration des RDVs.',
+        'active' => true,
+        'icone' => $this->viewValue('<i class="fas fa-calendar-alt"></i>'),
+        'url' => Url::fromRoute('prise_rendez_vous.default_settings_form'),
+        'class' => '',
+        'childrens' => []
       ]
     ];
     return $custom_items;
