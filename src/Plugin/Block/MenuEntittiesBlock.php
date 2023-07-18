@@ -276,6 +276,20 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
         'url' => Url::fromRoute('prise_rendez_vous.default_settings_form'),
         'class' => '',
         'childrens' => []
+      ],
+      [
+        'label' => 'Configuration des passerelles de paiements.',
+        'active' => true,
+        'icone' => $this->viewValue('<i class="fas fa-calendar-alt"></i>'),
+        'url' => Url::fromRoute('lesroidelareno.payement_gateways', [
+          'payment_plugin_id' => 'list-all'
+        ], [
+          'query' => [
+            'destination' => $this->Request->getPathInfo()
+          ]
+        ]),
+        'class' => '',
+        'childrens' => []
       ]
     ];
     return $custom_items;
