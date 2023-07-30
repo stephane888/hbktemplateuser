@@ -290,6 +290,18 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
         ]),
         'class' => '',
         'childrens' => []
+      ],
+      [
+        'label' => 'Menus',
+        'active' => true,
+        'icone' => $this->viewValue('<i class="fas fa-ellipsis-v"></i>'),
+        'url' => Url::fromRoute('lesroidelareno.manage_menu', [], [
+          'query' => [
+            'destination' => $this->Request->getPathInfo()
+          ]
+        ]),
+        'class' => '',
+        'childrens' => []
       ]
     ];
     return $custom_items;
