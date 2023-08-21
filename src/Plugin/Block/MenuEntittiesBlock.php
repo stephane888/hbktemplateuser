@@ -278,6 +278,14 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
         'childrens' => []
       ],
       [
+        'label' => 'Configuration des RDVs. v2 ',
+        'active' => true,
+        'icone' => $this->viewValue('<i class="fas fa-calendar-alt"></i>'),
+        'url' => Url::fromRoute('bookingsystem_autoecole.config.default'),
+        'class' => '',
+        'childrens' => []
+      ],
+      [
         'label' => 'Configuration des passerelles de paiements.',
         'active' => true,
         'icone' => $this->viewValue('<i class="fas fa-calendar-alt"></i>'),
