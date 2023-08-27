@@ -79,6 +79,11 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
     ] + parent::defaultConfiguration();
   }
   
+  /**
+   *
+   * {@inheritdoc}
+   * @see \Drupal\hbktemplateuser\Plugin\Block\BaseResumeEntity::buildConfigurationForm()
+   */
   public function buildConfigurationForm($form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
     $form['override_menus'] = [
@@ -168,6 +173,11 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
     return $form;
   }
   
+  /**
+   *
+   * @param array $entities
+   * @return []
+   */
   protected function formatValues($entities) {
     $key_default = 'default';
     $items = [];
@@ -304,6 +314,18 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
         'active' => true,
         'icone' => $this->viewValue('<i class="fas fa-ellipsis-v"></i>'),
         'url' => Url::fromRoute('lesroidelareno.manage_menu', [], [
+          'query' => [
+            'destination' => $this->Request->getPathInfo()
+          ]
+        ]),
+        'class' => '',
+        'childrens' => []
+      ],
+      [
+        'label' => 'Planning',
+        'active' => true,
+        'icone' => $this->viewValue('<i class="fas fa-ellipsis-v"></i>'),
+        'url' => Url::fromRoute('bks_schedule.views', [], [
           'query' => [
             'destination' => $this->Request->getPathInfo()
           ]
