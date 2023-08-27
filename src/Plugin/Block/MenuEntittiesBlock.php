@@ -321,11 +321,23 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
         'class' => '',
         'childrens' => []
       ],
+      // [
+      // 'label' => 'Planning',
+      // 'active' => true,
+      // 'icone' => $this->viewValue('<i class="fas fa-ellipsis-v"></i>'),
+      // 'url' => Url::fromRoute('bks_schedule.views', [], [
+      // 'query' => [
+      // 'destination' => $this->Request->getPathInfo()
+      // ]
+      // ]),
+      // 'class' => '',
+      // 'childrens' => []
+      // ],
       [
         'label' => 'Planning',
         'active' => true,
         'icone' => $this->viewValue('<i class="fas fa-ellipsis-v"></i>'),
-        'url' => Url::fromRoute('bks_schedule.views', [], [
+        'url' => Url::fromUserInput('/planning-reservation', [], [
           'query' => [
             'destination' => $this->Request->getPathInfo()
           ]
