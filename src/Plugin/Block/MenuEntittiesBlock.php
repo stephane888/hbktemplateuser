@@ -279,11 +279,19 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
           ]
         ]
       ],
+      // [
+      // 'label' => 'Configuration des RDVs.',
+      // 'active' => true,
+      // 'icone' => $this->viewValue('<i class="fas fa-calendar-alt"></i>'),
+      // 'url' => Url::fromRoute('prise_rendez_vous.default_settings_form'),
+      // 'class' => '',
+      // 'childrens' => []
+      // ],
       [
-        'label' => 'Configuration des RDVs.',
+        'label' => 'Configuration creneaux (default)',
         'active' => true,
         'icone' => $this->viewValue('<i class="fas fa-calendar-alt"></i>'),
-        'url' => Url::fromRoute('prise_rendez_vous.default_settings_form'),
+        'url' => Url::fromRoute('lesroidelareno.booking_system.config.default'),
         'class' => '',
         'childrens' => []
       ],
