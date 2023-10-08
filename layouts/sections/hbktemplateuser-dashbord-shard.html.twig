@@ -5,7 +5,7 @@
 			<aside class="main-sidebar col px-0 ">
 				<div class="main-navbar">
 					<nav
-						class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
+						class="navbar align-items-stretch navbar-light  flex-md-nowrap border-bottom p-0">
 						<div class="navbar-brand w-100 mr-0" style="line-height: 25px">
 							{% if content.logo %}
 							<div class=""
@@ -27,17 +27,20 @@
 				{% endif %}
 			</aside>
 			<main class="main-content col px-0">
-				<div class="main-navbar sticky-top bg-white">
+				<div class="main-navbar sticky-top ">
 					<nav
 						class="navbar align-items-stretch navbar-light flex-md-nowrap p-0 w-100">
-						<div class="row w-100">
-							{% if content.search %}
-							<div {{ region_attributes.search.addClass('col-md-6') }}>
-								{{ content.search }}
+						<div class="row w-100 align-items-center">
+							{% if content.branding %}
+							<div {{ region_attributes.branding.addClass(['col-md-3','branding']) }}>
+								{{ content.branding }}
+							</div>
+							<div {{ region_attributes.search.addClass(['col','ml-auto']) }}>
+								{{ content.search|layout_value }}
 							</div>
 							{% endif %}
 							{% if content.infos_user %}
-							<div {{ region_attributes.infos_user.addClass(['col-md-6','d-flex','justify-content-end','align-items-center']) }}>
+							<div {{ region_attributes.infos_user.addClass(['col','col-auto','ml-auto','d-flex','justify-content-end','align-items-center']) }}>
     							<div class="btn-group" role="group">
     								<a type="button" class="dropdown-toggle"
     									data-toggle="dropdown" aria-expanded="false"> <i class="fas fa-user"></i>

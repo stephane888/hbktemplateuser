@@ -21,6 +21,9 @@ use Drupal\formatage_models\FormatageModelsThemes;
  *     "logo" = {
  *       "label" = @Translation("logo"),
  *     },
+ *     "branding" = {
+ *       "label" = @Translation("branding"),
+ *     },
  *     "aside" = {
  *       "label" = @Translation("aside"),
  *     },
@@ -40,7 +43,7 @@ use Drupal\formatage_models\FormatageModelsThemes;
  * )
  */
 class HbktemplateuserDaashbordhard extends FormatageModelsSection {
-
+  
   /**
    *
    * {@inheritdoc}
@@ -51,7 +54,7 @@ class HbktemplateuserDaashbordhard extends FormatageModelsSection {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $styles_group_manager);
     $this->pluginDefinition->set('icon', drupal_get_path('module', 'hbktemplateuser') . "/icones/sections/hbktem_dashbord_shard.png");
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -63,7 +66,7 @@ class HbktemplateuserDaashbordhard extends FormatageModelsSection {
     FormatageModelsThemes::formatSettingValues($build);
     return $build;
   }
-
+  
   /**
    * -
    */
@@ -72,5 +75,5 @@ class HbktemplateuserDaashbordhard extends FormatageModelsSection {
       'css' => 'h-100'
     ] + parent::defaultConfiguration();
   }
-
+  
 }
