@@ -28,26 +28,26 @@ class ContentTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
    * @var LayoutgenentitystylesServices
    */
   protected $LayoutgenentitystylesServices;
-  
+
   /**
    * The entity type manager.
    *
    * @var EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-  
+
   /**
    *
    * @var HbktemplateuserGenerateLayouts
    */
   protected $HbktemplateuserGenerateLayouts;
-  
+
   /**
    *
    * @var DomainNegotiator
    */
   protected $DomainNegotiator;
-  
+
   /**
    * Constructs a new CartBlock.
    *
@@ -70,7 +70,7 @@ class ContentTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
     $this->HbktemplateuserGenerateLayouts = $HbktemplateuserGenerateLayouts;
     $this->DomainNegotiator = $DomainNegotiator;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -78,7 +78,7 @@ class ContentTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static($configuration, $plugin_id, $plugin_definition, $container->get('layoutgenentitystyles.add.style.theme'), $container->get('entity_type.manager'), $container->get('hbktemplateuser.generate.layouts'), $container->get('domain.negotiator'));
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -99,6 +99,7 @@ class ContentTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
       $entityQuery = $this->entityTypeManager->getStorage('node')->getQuery();
       $query = $entityQuery->condition('status', true)->condition('type', $value->id())->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
       $query->condition('uid', $uid);
+      $query->accessCheck(FALSE);
       $nbre = $query->count()->execute();
       $link = 'internal:/manage-node/';
       $link = \Drupal\Core\Url::fromUri($link . $value->id(), []);
@@ -110,7 +111,7 @@ class ContentTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
         '#url' => $link,
         '#attributes' => []
       ];
-      
+
       $regions = [
         'title' => [
           $titre
@@ -140,5 +141,4 @@ class ContentTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
     else
       return [];
   }
-  
 }

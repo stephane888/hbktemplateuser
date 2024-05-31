@@ -19,18 +19,18 @@ class ResumeEntity {
    * @var EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-  
+
   /**
    *
    * @var HbktemplateuserGenerateLayouts
    */
   protected $HbktemplateuserGenerateLayouts;
-  
+
   function __construct(EntityTypeManagerInterface $entity_type_manager, HbktemplateuserGenerateLayouts $HbktemplateuserGenerateLayouts) {
     $this->entityTypeManager = $entity_type_manager;
     $this->HbktemplateuserGenerateLayouts = $HbktemplateuserGenerateLayouts;
   }
-  
+
   /**
    *
    * @return array
@@ -45,6 +45,7 @@ class ResumeEntity {
        * @var NodeType $nodeType
        */
       $query = $entityQuery->condition('type', $nodeType->id())->condition('status', true);
+      $query->accessCheck(FALSE);
       $regions = [
         'title' => [
           '#markup' => $nodeType->label()
@@ -56,10 +57,8 @@ class ResumeEntity {
           '#markup' => $query->count()->execute()
         ]
       ];
-      $blocs[] = $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions);
-      ;
+      $blocs[] = $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions);;
     }
     return $blocs;
   }
-  
 }

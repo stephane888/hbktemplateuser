@@ -28,26 +28,26 @@ class BlocksContentsTypeResumeEntity extends BaseResumeEntity implements Contain
    * @var LayoutgenentitystylesServices
    */
   protected $LayoutgenentitystylesServices;
-  
+
   /**
    * The entity type manager.
    *
    * @var EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-  
+
   /**
    *
    * @var HbktemplateuserGenerateLayouts
    */
   protected $HbktemplateuserGenerateLayouts;
-  
+
   /**
    *
    * @var DomainNegotiator
    */
   protected $DomainNegotiator;
-  
+
   /**
    * Constructs a new CartBlock.
    *
@@ -70,7 +70,7 @@ class BlocksContentsTypeResumeEntity extends BaseResumeEntity implements Contain
     $this->HbktemplateuserGenerateLayouts = $HbktemplateuserGenerateLayouts;
     $this->DomainNegotiator = $DomainNegotiator;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -78,7 +78,7 @@ class BlocksContentsTypeResumeEntity extends BaseResumeEntity implements Contain
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static($configuration, $plugin_id, $plugin_definition, $container->get('layoutgenentitystyles.add.style.theme'), $container->get('entity_type.manager'), $container->get('hbktemplateuser.generate.layouts'), $container->get('domain.negotiator'));
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -95,14 +95,15 @@ class BlocksContentsTypeResumeEntity extends BaseResumeEntity implements Contain
     foreach ($typesProduct as $value) {
       $entityQuery = $this->entityTypeManager->getStorage('blocks_contents')->getQuery();
       $query = $entityQuery->condition('status', true)->condition('type', $value->id())->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
+      $query->accessCheck(FALSE);
       $nbre = $query->count()->execute();
       $link = 'internal:/manage-blocks_contents/';
       $link = \Drupal\Core\Url::fromUri($link . $value->id(), []);
       //
-      
+
       if ($nbre == 0)
         continue;
-      
+
       $titre = [
         '#type' => 'link',
         '#title' => [
@@ -112,7 +113,7 @@ class BlocksContentsTypeResumeEntity extends BaseResumeEntity implements Contain
         '#url' => $link,
         '#attributes' => []
       ];
-      
+
       $regions = [
         'title' => [
           $titre
@@ -143,5 +144,4 @@ class BlocksContentsTypeResumeEntity extends BaseResumeEntity implements Contain
       return [];
     return $build;
   }
-  
 }

@@ -26,26 +26,26 @@ class ProductTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
    * @var LayoutgenentitystylesServices
    */
   protected $LayoutgenentitystylesServices;
-  
+
   /**
    * The entity type manager.
    *
    * @var EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-  
+
   /**
    *
    * @var HbktemplateuserGenerateLayouts
    */
   protected $HbktemplateuserGenerateLayouts;
-  
+
   /**
    *
    * @var DomainNegotiator
    */
   protected $DomainNegotiator;
-  
+
   /**
    * Constructs a new CartBlock.
    *
@@ -68,7 +68,7 @@ class ProductTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
     $this->HbktemplateuserGenerateLayouts = $HbktemplateuserGenerateLayouts;
     $this->DomainNegotiator = $DomainNegotiator;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -76,7 +76,7 @@ class ProductTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static($configuration, $plugin_id, $plugin_definition, $container->get('layoutgenentitystyles.add.style.theme'), $container->get('entity_type.manager'), $container->get('hbktemplateuser.generate.layouts'), $container->get('domain.negotiator'));
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -99,10 +99,11 @@ class ProductTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
       // un produit peut appartenir à un ou plusiseurs domaines, mais en realité
       // il appartient à un utilisateur bien precis. (voir la tache/2183)
       $query->condition('uid', $uid);
+      $query->accessCheck(FALSE);
       $nbre = $query->count()->execute();
       $link = 'internal:/manage-commerce_product/';
       $link = \Drupal\Core\Url::fromUri($link . $value->id(), []);
-      
+
       if ($nbre == 0)
         continue;
       $titre = [
@@ -123,7 +124,7 @@ class ProductTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
           '#markup' => $nbre
         ]
       ];
-      
+
       $sections[] = [
         '#theme' => 'hbktemplateuser_resume_entity',
         '#block' => $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions)
@@ -145,5 +146,4 @@ class ProductTypeResumeEntity extends BaseResumeEntity implements ContainerFacto
       return [];
     return $build;
   }
-  
 }

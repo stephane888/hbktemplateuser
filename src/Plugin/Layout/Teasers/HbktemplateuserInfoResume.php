@@ -34,7 +34,7 @@ use Drupal\formatage_models\FormatageModelsThemes;
  * )
  */
 class HbktemplateuserInfoResume extends FormatageModelsTeasers {
-  
+
   /**
    *
    * {@inheritdoc}
@@ -43,9 +43,9 @@ class HbktemplateuserInfoResume extends FormatageModelsTeasers {
   public function __construct(array $configuration, $plugin_id, $plugin_definition, StylesGroupManager $styles_group_manager) {
     // TODO Auto-generated method stub
     parent::__construct($configuration, $plugin_id, $plugin_definition, $styles_group_manager);
-    $this->pluginDefinition->set('icon', drupal_get_path('module', 'hbktemplateuser') . "/icones/teasers/formatage-models-blog-call-toaction.png");
+    $this->pluginDefinition->set('icon', $this->pathResolver->getPath('module', 'hbktemplateuser') . "/icones/teasers/formatage-models-blog-call-toaction.png");
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -58,7 +58,7 @@ class HbktemplateuserInfoResume extends FormatageModelsTeasers {
     // dump($build['title']);
     return $build;
   }
-  
+
   /**
    * -
    */
@@ -103,5 +103,4 @@ class HbktemplateuserInfoResume extends FormatageModelsTeasers {
       ]
     ] + parent::defaultConfiguration();
   }
-  
 }
