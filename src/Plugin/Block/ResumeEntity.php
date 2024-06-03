@@ -28,27 +28,27 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
    * @var LayoutgenentitystylesServices
    */
   protected $LayoutgenentitystylesServices;
-
+  
   /**
    * The entity type manager.
    *
    * @var EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-
+  
   /**
    *
    * @var HbktemplateuserGenerateLayouts
    */
   protected $HbktemplateuserGenerateLayouts;
-
+  
   /**
    *
    * @var DomainNegotiator
    */
   protected $DomainNegotiator;
   protected $Request;
-
+  
   /**
    * Constructs a new CartBlock.
    *
@@ -72,7 +72,7 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
     $this->DomainNegotiator = $DomainNegotiator;
     $this->Request = $RequestStack->getCurrentRequest();
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -80,7 +80,7 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static($configuration, $plugin_id, $plugin_definition, $container->get('layoutgenentitystyles.add.style.theme'), $container->get('entity_type.manager'), $container->get('hbktemplateuser.generate.layouts'), $container->get('domain.negotiator'), $container->get('request_stack'));
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -93,7 +93,7 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
     $nbre = 0;
     $build = [];
     $sections = [];
-
+    
     // dump($this->configuration);
     if (!empty($this->configuration['type_entity'])) {
       // gere les entitées avec bundle donc on souhaite afficher un bundle en
@@ -114,7 +114,8 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
               'destination' => $this->Request->getPathInfo()
             ]
           ]);
-        } elseif ($this->configuration['type_entity'] == 'blocks_contents_type') {
+        }
+        elseif ($this->configuration['type_entity'] == 'blocks_contents_type') {
           $entityQuery = $this->entityTypeManager->getStorage('blocks_contents')->getQuery();
           $query = $entityQuery->condition('status', true)->condition('type', $this->configuration['content']['type'])->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
           $query->accessCheck(FALSE);
@@ -126,7 +127,8 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
               'destination' => $this->Request->getPathInfo()
             ]
           ]);
-        } elseif ($this->configuration['type_entity'] == 'commerce_product_type') {
+        }
+        elseif ($this->configuration['type_entity'] == 'commerce_product_type') {
           $entityQuery = $this->entityTypeManager->getStorage('commerce_product')->getQuery();
           $query = $entityQuery->condition('status', true)->condition('type', $this->configuration['content']['type'])->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
           $query->accessCheck(FALSE);
@@ -138,7 +140,8 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
               'destination' => $this->Request->getPathInfo()
             ]
           ]);
-        } elseif ($this->configuration['type_entity'] == 'block_content_type') {
+        }
+        elseif ($this->configuration['type_entity'] == 'block_content_type') {
           $entityQuery = $this->entityTypeManager->getStorage('block_content')->getQuery();
           $query = $entityQuery->condition('status', true)->condition('type', $this->configuration['content']['type'])->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
           $query->accessCheck(FALSE);
@@ -150,7 +153,8 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
               'destination' => $this->Request->getPathInfo()
             ]
           ]);
-        } else {
+        }
+        else {
           $this->messenger()->addWarning($this->viewValue("<p> <b>hbktemplateuser</b> </p> Le type d'entite <i><b>" . $this->configuration['type_entity'] . "<b></i> n'est pas encore configurer "));
         }
         if ($nbre == 0)
@@ -170,7 +174,7 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
             '#markup' => $nbre
           ]
         ];
-
+        
         $sections = [
           '#theme' => 'hbktemplateuser_resume_entity',
           '#block' => $this->HbktemplateuserGenerateLayouts->getLayout('hbktemplateuser_info_resume', $regions)
@@ -198,12 +202,13 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
           // dump($this->DomainNegotiator->getActiveId());
           $contents = $this->entityTypeManager->getStorage($this->configuration['type_entity'])->loadMultiple($ids);
           $this->buildBlockEntityId($contents, $sections);
-        } else {
+        }
+        else {
           $entityTypeId = $this->entityTypeManager->getStorage($this->configuration['type_entity'])->getEntityType()->getBundleOf();
           $bundles = $this->entityTypeManager->getStorage($this->configuration['type_entity'])->loadMultiple();
           $StorageEntity = $this->entityTypeManager->getStorage($entityTypeId);
           foreach ($bundles as $bundle) {
-            $entityQuery = $StorageEntity->getQuery();
+            $entityQuery = $StorageEntity->getQuery()->accessCheck();
             $entityQuery->condition('status', true)->condition('type', $bundle->id())->condition('field_domain_access', $this->DomainNegotiator->getActiveId());
             $query->accessCheck(FALSE);
             $nbre = $entityQuery->count()->execute();
@@ -255,7 +260,7 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
     else
       return [];
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -300,7 +305,7 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
     if ($form_state instanceof SubformStateInterface) {
       $form_state = $form_state->getCompleteFormState();
     }
-
+    
     if ($complete_form_state->hasValue([
       'settings',
       'type_entity'
@@ -341,7 +346,8 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
       // $type_entity);
       // break;
       // }
-    } elseif (!empty($this->configuration['type_entity'])) {
+    }
+    elseif (!empty($this->configuration['type_entity'])) {
       $type_entity = $this->configuration['type_entity'];
       // $list_entities_type =
       // $this->entityTypeManager->getStorage($type_entity)->loadMultiple();
@@ -369,11 +375,11 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
       ];
     return $form;
   }
-
+  
   public function _blockFormCallback($form, FormStateInterface $form_state) {
     return $form['settings']['content'];
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -386,7 +392,7 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
       ]
     ] + parent::defaultConfiguration();
   }
-
+  
   /**
    *
    * {@inheritdoc}
@@ -397,4 +403,5 @@ class ResumeEntity extends BaseResumeEntity implements ContainerFactoryPluginInt
     $this->configuration['type_entity'] = $form_state->getValue('type_entity');
     $this->configuration['content'] = $form_state->getValue('content');
   }
+  
 }
