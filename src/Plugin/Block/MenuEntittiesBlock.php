@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Url;
-use Drupal\Core\Http\RequestStack;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\domain\DomainNegotiator;
 
 /**
@@ -21,7 +21,7 @@ use Drupal\domain\DomainNegotiator;
  * )
  */
 class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPluginInterface {
-  
+
   /**
    * The entity type manager.
    *
@@ -34,14 +34,14 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
    * @var DomainNegotiator
    */
   protected $DomainNegotiator;
-  
+
   function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, RequestStack $RequestStack, DomainNegotiator $DomainNegotiator) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityTypeManager = $entity_type_manager;
     $this->Request = $RequestStack->getCurrentRequest();
     $this->DomainNegotiator = $DomainNegotiator;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -49,7 +49,7 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static($configuration, $plugin_id, $plugin_definition, $container->get('entity_type.manager'), $container->get('request_stack'), $container->get('domain.negotiator'));
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -64,7 +64,7 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
     ];
     return $build;
   }
-  
+
   public function defaultConfiguration() {
     return [
       'override_menus' => false,
@@ -78,7 +78,7 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
       ]
     ] + parent::defaultConfiguration();
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -97,7 +97,7 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
       '#open' => true
     ];
     $entities = $this->buildDefaultEntities();
-    
+
     foreach ($entities as $id => $entity) {
       $group = isset($this->configuration['entities'][$id]['group']) ? $this->configuration['entities'][$id]['group'] : '';
       $form['entities'][$id] = [
@@ -172,7 +172,7 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
     }
     return $form;
   }
-  
+
   /**
    *
    * @param array $entities
@@ -187,8 +187,7 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
           'title_group' => $label,
           'items' => []
         ];
-      }
-      else
+      } else
         $items[$key_default] = [
           'title_group' => '',
           'items' => $this->CustomMenus()
@@ -202,14 +201,13 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
         }
       if (!empty($item['group'])) {
         $items[$item['group']]['items'][] = $item;
-      }
-      else {
+      } else {
         $items[$key_default]['items'][] = $item;
       }
     }
     return $items;
   }
-  
+
   protected function CustomMenus() {
     $domain = $this->DomainNegotiator->getActiveDomain();
     $themeConf = $this->entityTypeManager->getStorage("config_theme_entity")->loadByProperties([
@@ -364,7 +362,7 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
     ];
     return $custom_items;
   }
-  
+
   protected function buildDefaultEntities() {
     $entities = $this->entityTypeManager->getDefinitions();
     $results = [];
@@ -400,7 +398,7 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
     }
     return $results;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -411,10 +409,8 @@ class MenuEntittiesBlock extends BaseResumeEntity implements ContainerFactoryPlu
     $this->configuration['override_menus'] = $override_menus;
     if ($override_menus) {
       $this->configuration['entities'] = $form_state->getValue('entities');
-    }
-    else {
+    } else {
       $this->configuration['entities'] = [];
     }
   }
-  
 }
