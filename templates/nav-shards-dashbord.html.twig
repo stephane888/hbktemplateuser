@@ -10,7 +10,7 @@
 					{% if item.childrens %}
 						<i class="fas fa-caret-right icon-submenu"></i>
 						<ul class="nav flex-column">
-							{% for subItem in item.childrens if subItem.active %}
+							{% for subItem in item.childrens %}
 								{% if subItem.active %}
 									<li class="nav-item">
 										<a class="nav-link {% if subItem.url is empty %} disabled {% endif %}" href="{{ subItem.url }}">
