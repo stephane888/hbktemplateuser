@@ -3,3 +3,5 @@ type: module
 description: fournit un template pour la gestion des contenus
 package: Custom
 core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:layout_builder
